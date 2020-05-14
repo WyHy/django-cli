@@ -1,0 +1,169 @@
+version: '2'
+
+services:
+#  proxy:
+#    restart: always
+#    build: Nginx
+#    image: "${REGISTRY}/${NAMESPACE}/proxy:${TAG}"
+#    volumes:
+#      - "./Nginx/log/:/var/log/nginx/"
+#    ports:
+#      - "8006:8000"
+#    links:
+#      - imh-server
+#    depends_on:
+#      - imh-server
+
+  database:
+    restart: always
+    build: Postgres
+    image: "${REGISTRY}/${NAMESPACE}/database:${TAG}"
+    expose:
+      - "5432"
+    ports:
+      - "5435:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./Postgres/data:/var/lib/postgresql/data/
+      - ./Postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+    command: postgres -c 'config_file=/etc/postgresql/postgresql.conf'
+  
+#  pgAdmin:
+#    restart: always
+#    image: "dpage/pgadmin4:4.19"
+#    environment:
+#      - "PGADMIN_DEFAULT_EMAIL=taylorherelee@gmail.com"
+#      - "PGADMIN_DEFAULT_PASSWORD=TaylorHere"
+#    links:
+#      - "database"
+#    ports:
+#      - "85:80"
+#    expose:
+#      - "80"
+#    command: dpage/pgadmin4
+#
+#  mongo:
+#    image: "${REGISTRY}/${NAMESPACE}/mongo:${TAG}"
+#    build: Mongo
+#    restart: always
+#    expose:
+#      - "27017"
+#    ports:
+#      - "27019:27017"
+#    volumes:
+#      - "./Mongo/data/:/data/db"
+#      - "./Mongo/mongod.conf:/etc/mongo/mongod.conf"
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: root
+#      MONGO_INITDB_ROOT_PASSWORD: example
+#    command: --config /etc/mongo/mongod.conf
+#
+#  mongo-express:
+#    image: mongo-express:0.49
+#    restart: always
+#    ports:
+#      - 8085:8081
+#    links:
+#      - mongo
+#    environment:
+#      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+#      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+#
+#  redis:
+#    restart: always
+#    build: Redis
+#    image: "${REGISTRY}/${NAMESPACE}/redis:${TAG}"
+#    expose:
+#      - "6379"
+#    ports:
+#      - "6382:6379"
+#    volumes:
+#      - "./Redis/data/:/data/"
+#    command: redis-server /usr/local/etc/redis/redis.conf
+#
+#  imh-server:
+#    restart: always
+#    build: src
+#    image: "${REGISTRY}/${NAMESPACE}/imh-server:${TAG}"
+#    expose:
+#      - '8000'
+#    environment:
+#        - redis_host=redis
+#        - redis_port=6379
+#        - database_host=database
+#        - database_port=5432
+#        - mongo_host=mongo
+#        - mongo_port=27017
+#        - mongo_username=root
+#        - mongo_password=example
+#        - database_request_url=http://192.168.1.178:10011/getReportContent
+#        - elk_host=http://elastic:changeme@192.168.1.152:9400
+#        - elk_index=him_server_log
+#        - elk_doc_type=algorithm-request
+#        - rq_worker_num=3
+#    links:
+#      - redis
+#      - database
+#      - mongo
+#    working_dir: /src/apis/
+#    command: python3 v1.py
+#
+#  imh-server-rq:
+#    restart: always
+#    build: src
+#    image: "${REGISTRY}/${NAMESPACE}/imh-server:${TAG}"
+#    expose:
+#      - '8000'
+#    environment:
+#        - redis_host=redis
+#        - redis_port=6379
+#        - database_host=database
+#        - database_port=5432
+#        - mongo_host=mongo
+#        - mongo_port=27017
+#        - mongo_username=root
+#        - mongo_password=example
+#        - database_request_url=http://192.168.1.178:10011/getReportContent
+#        - elk_host=http://elastic:changeme@192.168.1.152:9400
+#        - elk_index=him_server_log
+#        - elk_doc_type=algorithm-request
+#        - rq_worker_num=3
+#    links:
+#      - redis
+#      - database
+#      - mongo
+#    working_dir: /src/
+#    command: rq worker --url redis://redis:6379
+#    # command: rq worker --url redis://192.168.1.152:6381
+#
+#  imh-server-rq-dashboard:
+#    restart: always
+#    build: src
+#    image: "${REGISTRY}/${NAMESPACE}/imh-server:${TAG}"
+#    expose:
+#      - '9181'
+#    ports:
+#      - '9183:9181'
+#    environment:
+#        - redis_host=redis
+#        - redis_port=6379
+#        - database_host=database
+#        - database_port=5432
+#        - mongo_host=mongo
+#        - mongo_port=27017
+#        - mongo_username=root
+#        - mongo_password=example
+#        - database_request_url=http://192.168.1.178:10011/getReportContent
+#        - elk_host=http://elastic:changeme@192.168.1.152:9400
+#        - elk_index=him_server_log
+#        - elk_doc_type=algorithm-request
+#        - rq_worker_num=3
+#    links:
+#      - redis
+#      - database
+#      - mongo
+#    working_dir: /src/
+#    command: rq-dashboard -u redis://redis:6379
+#    # command: rq-dashboard -u redis://192.168.1.152:6381
